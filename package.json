@@ -1,0 +1,20 @@
+{
+  "name": "bsve_demo_app",
+  "version": "0.1.0",
+  "description": "A test integrating BSVE and GeoJS",
+  "main": "geojs-test/app.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OpenGeoscience/bsve_geojs_demo.git"
+  },
+  "author": "Kitware, Inc.",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/OpenGeoscience/bsve_geojs_demo/issues"
+  },
+  "homepage": "https://github.com/OpenGeoscience/bsve_geojs_demo#readme",
+  "dependencies": {
+    "geojs": "^0.5.0"
+  }
+}
