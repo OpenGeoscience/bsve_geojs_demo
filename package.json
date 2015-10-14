@@ -2,7 +2,9 @@
   "name": "bsve_demo_app",
   "version": "0.1.0",
   "description": "A test integrating BSVE and GeoJS",
-  "scripts": {},
+  "scripts": {
+    "install": "webpack"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/OpenGeoscience/bsve_geojs_demo.git"
@@ -14,6 +16,7 @@
   },
   "homepage": "https://github.com/OpenGeoscience/bsve_geojs_demo#readme",
   "dependencies": {
-    "geojs": "^0.5.0"
+    "geojs": "^0.5.0",
+    "webpack": "^1.12.2"
   }
 }
