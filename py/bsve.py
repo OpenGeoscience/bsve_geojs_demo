@@ -70,3 +70,9 @@ def results(request):
         search = req.json()
         result = search['status'] == 1
     return search
+
+if __name__ == '__main__':
+    import sys
+    req = search({'term': ' '.join(sys.argv[1:])})
+    res = results(req)
+    print json.dumps(res, default=str, indent=2)
