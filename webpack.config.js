@@ -2,7 +2,8 @@ module.exports = {
     entry: './src/main.js',
     output: {
         path: __dirname + '/geojs-test/WebContent',
-        filename: 'app.js'
+        filename: 'app.js',
+        publicPath: '/'
     },
     module: {
         loaders: [
