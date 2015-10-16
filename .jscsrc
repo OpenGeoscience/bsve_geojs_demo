@@ -1,0 +1,10 @@
+{
+  "preset": "crockford",
+  "requireMultipleVarDecl": null,
+  "disallowQuotedKeysInObjects": null,
+  "validateQuoteMarks": true,
+  "validateIndentation": 4,
+  "requireCamelCaseOrUpperCaseIdentifiers": null,
+  "disallowDanglingUnderscores": null,
+  "requireVarDeclFirst": null
+}
