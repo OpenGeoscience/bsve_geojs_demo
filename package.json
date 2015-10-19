@@ -30,6 +30,7 @@
     "imports-loader": "^0.6.4",
     "jquery": "^2.1.4",
     "json-loader": "^0.5.3",
+    "pnltri": "^2.1.1",
     "proj4": "^2.3.12",
     "style-loader": "^0.12.4",
     "webpack": "^1.12.2"

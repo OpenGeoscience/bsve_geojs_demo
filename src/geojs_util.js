@@ -1,6 +1,7 @@
-var geo_data_store = 'geo',
-    $ = require('jquery'),
-    geo = require('geojs');
+var geo_data_store = 'geo';
+
+require('./devel');
+require('geojs');
 
 /**
  * This object contains methods that are callable from the
@@ -13,11 +14,26 @@ var geo_methods = {
      * Get/set data from the map instance.
      */
     data: function (name, data) {
-        var geoData = $(this).data(geo_data_store);
+        var geoData = this.data(geo_data_store) || {};
         if (data === undefined) {
             return geoData[name];
         }
         geoData[name] = data;
+        this.geojs('update');
+    },
+
+    /**
+     * Redraw the map.
+     */
+    update: function () {
+        var data = this.geojs('data', 'search'),
+            point = this.geojs('data', 'point'),
+            map = this.geojs('data', 'map');
+
+        if (point) {
+            point.data(data);
+            map.draw();
+        }
     }
 };
 
@@ -26,13 +42,31 @@ var geo_methods = {
  * @param {object} search The search result object
  */
 function make_search_handler(node) {
-    var $el = $(node);
-    $el.geojs();
-
     return function handler(search) {
-        $el.geojs('data', 'search', search);
-        console.log(search);
+        var $el = $(node);
+        $el.geojs('data', 'search', process_search(search));
     };
+}
+
+/**
+ * Process a search result coming from the BSVE.
+ * @param {object} result The search result object.
+ * @returns obect[] An array of point data
+ */
+function process_search(result) {
+    if (result.status !== 1) {
+        console.log('Ignoring incomplete search result.');
+        return [];
+    }
+    return result.results.filter(function (d) {
+        return d.data && d.data.Longitude && d.data.Latitude;
+    }).map(function (d) {
+        d = d.data;
+        return {
+            x: parseFloat(d.Longitude),
+            y: parseFloat(d.Latitude)
+        };
+    });
 }
 
 /**
@@ -40,12 +74,15 @@ function make_search_handler(node) {
  * The `this` context should be the DOM element.
  */
 $.fn.geojs = function (method) {
-    var $this = $(this),
+    var $this = this,
         geoData = $this.data(geo_data_store) || {},
         map = geoData.map,
         osm = geoData.osm,
         layer = geoData.layer,
         point = geoData.points;
+
+    // Store the objects on the node
+    $this.data(geo_data_store, geoData);
 
     // Initialize the map on first call
     if (!map) {
@@ -72,13 +109,13 @@ $.fn.geojs = function (method) {
     }
 
     if (geo_methods.hasOwnProperty(method)) {
-        geo_methods[method].apply(this, arguments.slice(1));
+        return geo_methods[method].apply(
+            this,
+            Array.prototype.slice.call(arguments, 1)
+        );
     } else if (method) {
         throw new Error('Unknown method "' + method + '"');
     }
-
-    // Store the objects on the node
-    $this.data(geo_data_store, geoData);
 };
 
 module.exports = {
