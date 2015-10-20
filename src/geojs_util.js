@@ -38,12 +38,48 @@ var geo_methods = {
 
 /**
  * Responds to a search request by displaying information on the map.
- * @param {object} search The search result object
+ * @param {object} node The dom node to display the result on
  */
 function make_search_handler(node) {
-    return function handler(search) {
+    return function handler(query) {
         var $el = $(node);
-        $el.geojs('data', 'search', process_search(search));
+
+        // Perform the query
+        var filter = encodeURI('dateTime ge ' + query.startDate + ' and dateTime le ' + query.endDate);
+        BSVE.api.datasource.query('PON', filter, null, null, function (searchid) {
+            /**
+             * A polling method that waits until the search is complete and draws
+             * the results on the map.
+             */
+            function poll(result) {
+                var stat = parseInt(result.status);
+                if (stat === 0) {
+                    window.setTimeout(
+                        function () {
+                            BSVE.api.datasource.result(searchid, poll, onerror);
+                        },
+                        500
+                    );
+                } else if (stat === -1) {
+                    onerror();
+                } else {
+                    $el.geojs('data', 'search', process_search(result));
+                    done();
+                }
+            }
+
+            function onerror() {
+                console.log('Could not complete search ' + searchid);
+                done();
+            }
+
+            function done() {
+                // show the search bar maybe...
+                // BSVE.ui.searchbar.show();
+            }
+
+            poll({status: 0});
+        });
     };
 }
 
@@ -53,19 +89,21 @@ function make_search_handler(node) {
  * @returns obect[] An array of point data
  */
 function process_search(result) {
-    if (result.status !== 1) {
-        console.log('Ignoring incomplete search result.');
-        return [];
-    }
-    return result.results.filter(function (d) {
-        return d.data && d.data.Longitude && d.data.Latitude;
+    return result.result.filter(function (d) {
+        return d.longitude && d.latitude;
     }).map(function (d) {
-        d = d.data;
-        return {
-            x: parseFloat(d.Longitude),
-            y: parseFloat(d.Latitude)
-        };
+        $.extend(d, {
+            x: parseFloat(d.longitude),
+            y: parseFloat(d.latitude)
+        });
+        return d;
     });
+}
+
+/**
+ * Display the results of a search query on the map.
+ */
+function display_results() {
 }
 
 /**
@@ -85,7 +123,7 @@ $.fn.geojs = function (method) {
 
     // Initialize the map on first call
     if (!map) {
-        map = geo.map({node: this});
+        map = geo.map({node: this, zoom: 2});
         geoData.map = map;
         osm = null;
     }
@@ -118,5 +156,6 @@ $.fn.geojs = function (method) {
 };
 
 module.exports = {
-    search: make_search_handler
+    search: make_search_handler,
+    parse_result: process_search
 };

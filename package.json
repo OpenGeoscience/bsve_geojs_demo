@@ -5,7 +5,7 @@
   "scripts": {
     "install": "webpack",
     "start": "webpack-dev-server --content-base geojs-test/WebContent",
-    "publish": "NODE_ENV=production webpack -p --progress --colors; bsve test geojs-test"
+    "publish": "NODE_ENV=production webpack --progress --colors; bsve test geojs-test"
   },
   "repository": {
     "type": "git",
