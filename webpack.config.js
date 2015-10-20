@@ -17,11 +17,15 @@ if (process && process.env && process.env.NODE_ENV !== 'production') {
 }
 
 module.exports = {
-    entry: './src/main.js',
+    entry: [
+        'webpack-hot-middleware/client',
+//        'webpack/hot/only-dev-server',
+        './src/main.js'
+    ],
     output: {
         path: __dirname + '/geojs-test/WebContent',
         filename: 'app.js',
-        publicPath: '/'
+        publicPath: 'http://localhost:3000/'
     },
     module: {
         loaders: [
@@ -42,6 +46,9 @@ module.exports = {
         }
     },
     plugins: [
+        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoErrorsPlugin(),
         new webpack.ProvidePlugin(globals)
     ]
 };
