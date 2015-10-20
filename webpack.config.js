@@ -1,5 +1,5 @@
 var webpack = require('webpack'),
-    globals = {};
+    globals = {}, entry, plugins;
 
 globals = {
 /*    $: 'jquery', */ // provided by bsve
@@ -13,15 +13,30 @@ globals = {
 };
 
 if (process && process.env && process.env.NODE_ENV !== 'production') {
-    globals.devel = 'devel';
+    console.log('Building for local development');
+    entry = [
+        'webpack-hot-middleware/client',
+        'webpack/hot/dev-server',
+        './src/devel.js'
+    ];
+    plugins = [
+        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoErrorsPlugin(),
+        new webpack.ProvidePlugin(globals)
+    ];
+} else {
+    console.log('Building for remote deployment');
+    plugins = [
+        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.ProvidePlugin(globals)
+    ];
+    entry = ['./src/main.js'];
 }
 
+
 module.exports = {
-    entry: [
-        'webpack-hot-middleware/client',
-//        'webpack/hot/only-dev-server',
-        './src/main.js'
-    ],
+    entry: entry,
     output: {
         path: __dirname + '/geojs-test/WebContent',
         filename: 'app.js',
@@ -45,10 +60,5 @@ module.exports = {
             proj4: 'proj4/lib/index.js'
         }
     },
-    plugins: [
-        new webpack.optimize.OccurenceOrderPlugin(),
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin(),
-        new webpack.ProvidePlugin(globals)
-    ]
+    plugins: plugins
 };

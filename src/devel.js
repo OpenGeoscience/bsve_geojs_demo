@@ -5,6 +5,8 @@ var geojs_util = require('./geojs_util'),
     data = require('../py/flu.json'),
     search = geojs_util.search('#map');
 
+console.log('development mode activated');
+
 $(function () {
     // Force the search bar to be visibile
     $('.searchBar').css('top', 0);
@@ -12,5 +14,3 @@ $(function () {
     // pass sample search data to the plugin
     search(data);
 });
-
-module.exports = true;

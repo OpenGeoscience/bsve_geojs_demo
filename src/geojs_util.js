@@ -1,6 +1,5 @@
 var geo_data_store = 'geo';
 
-require('./devel');
 require('geojs');
 
 /**
