@@ -39,8 +39,7 @@ module.exports = {
     entry: entry,
     output: {
         path: __dirname + '/geojs-test/WebContent',
-        filename: 'app.js',
-        publicPath: 'http://localhost:3000/'
+        filename: 'app.js'
     },
     module: {
         loaders: [
